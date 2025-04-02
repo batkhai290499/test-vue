@@ -23,7 +23,6 @@ import { onMounted } from 'vue'
 
 const userStore = useUserStore()
 
-// Fetch user info when component is mounted
 onMounted(() => {
   userStore.fetchUserInfo()
 })

@@ -14,15 +14,15 @@ import {
 } from '@/components/ui/sidebar'
 
 import {
-  AudioWaveform,
+  // AudioWaveform,
   // BookOpen,
   // Bot,
-  Command,
+  // Command,
   Frame,
   GalleryVerticalEnd,
   // Map,
   // PieChart,
-  Settings2,
+  // Settings2,
   // SquareTerminal,
 } from 'lucide-vue-next'
 
@@ -39,46 +39,12 @@ const data = {
   },
   teams: [
     {
-      name: 'Acme Inc',
+      name: 'Zen8lab',
       logo: GalleryVerticalEnd,
       plan: 'Enterprise',
     },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
   ],
-  navMain: [
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
-    },
-  ],
+  navMain: [],
   projects: [
     {
       name: 'Design Engineering',
