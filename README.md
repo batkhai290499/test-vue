@@ -59,3 +59,10 @@ bun test:e2e
 ```sh
 bun lint
 ```
+
+### Login with account
+
+```
+username: emilys
+password: emilyspass
+```

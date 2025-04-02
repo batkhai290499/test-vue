@@ -1,32 +1,34 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-// import ComponentA from '@/components/ComponentA.vue'
-// import ComponentB from '@/components/ComponentB.vue'
+import Signin from '@/views/SignIn.vue'
+import AuthLayout from '@/layouts/AuthLayout.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      component: AuthLayout,
+      children: [
+        {
+          path: '',
+          component: Signin,
+          meta: { breadcrumb: 'Sign In' }, // Đặt breadcrumb cho route này
+        },
+      ],
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/dashboard',
+      component: AppLayout,
+      meta: { breadcrumb: 'Dashboard' },
+      // children: [
+      //   {
+      //     path: 'profile',
+      //     component: () => import('@/views/Profile.vue'),
+      //     meta: { breadcrumb: 'Profile' },
+      //   },
+      // ],
     },
-    // { path: '/user/:id', component: ComponentA },
-    // {
-    //   path: '/dashboard',
-    //   component: ComponentA,
-    //   children: [
-    //     { path: 'profile', component: ComponentB },
-    //     { path: 'settings', component: ComponentB },
-    //   ],
-    // },
   ],
 })
 
