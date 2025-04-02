@@ -13,21 +13,26 @@ const router = createRouter({
         {
           path: '',
           component: Signin,
-          meta: { breadcrumb: 'Sign In' }, // Đặt breadcrumb cho route này
         },
+        // {
+        //   path: 'register',
+        //   component: RegisterComponent,
+        //   meta: { breadcrumb: 'Register' },
+        // },
       ],
     },
     {
       path: '/dashboard',
       component: AppLayout,
       meta: { breadcrumb: 'Dashboard' },
-      // children: [
-      //   {
-      //     path: 'profile',
-      //     component: () => import('@/views/Profile.vue'),
-      //     meta: { breadcrumb: 'Profile' },
-      //   },
-      // ],
+      beforeEnter: (to, from, next) => {
+        const isAuthenticated = !!sessionStorage.getItem('token')
+        if (!isAuthenticated) {
+          next('/')
+        } else {
+          next()
+        }
+      },
     },
   ],
 })

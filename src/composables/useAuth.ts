@@ -1,7 +1,9 @@
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { authService } from '@/services/authServices'
 
 export default function useAuth() {
+  const router = useRouter()
   const username = ref('')
   const password = ref('')
   const isLoading = ref(false)
@@ -17,15 +19,16 @@ export default function useAuth() {
     try {
       const data = await authService.login(username.value, password.value)
 
-      sessionStorage.setItem('token', data.token)
+      sessionStorage.setItem('token', data.accessToken)
       sessionStorage.setItem('refreshToken', data.refreshToken)
       sessionStorage.setItem('expiresInMins', expiresInMins.value.toString())
 
-      token.value = data.token
+      token.value = data.accessToken
       refreshToken.value = data.refreshToken
       expiresInMins.value = expiresInMins.value
 
       console.log('Login successful:', data)
+      router.push('/dashboard')
     } catch (error) {
       errorMessage.value = 'Login failed. Please check your credentials.'
       console.error(error)
@@ -35,24 +38,26 @@ export default function useAuth() {
   }
 
   const refreshAccessToken = async () => {
+    if (!refreshToken.value) {
+      console.error('No refresh token available.')
+      return logout()
+    }
     try {
-      const response = await fetch('https://dummyjson.com/auth/refresh', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          refreshToken: refreshToken.value,
-          expiresInMins: expiresInMins.value,
-        }),
-        credentials: 'include',
-      })
+      const response = await authService.refreshAccessToken(refreshToken.value, expiresInMins.value)
+      console.log('calling refreshAccessToken:', response)
 
-      const data = await response.json()
-      if (data.token) {
-        sessionStorage.setItem('token', data.token)
-        token.value = data.token
-        console.log('Token refreshed:', data)
+      if (response?.token) {
+        const expiryTimestamp = Date.now() + expiresInMins.value * 60 * 1000
+        sessionStorage.setItem('token', response.token)
+        sessionStorage.setItem('expiresAt', expiryTimestamp.toString())
+
+        return {
+          token: response.token,
+          expiresAt: expiryTimestamp,
+        }
       }
     } catch (error) {
+      logout()
       console.error('Error refreshing token:', error)
     }
   }
@@ -64,6 +69,7 @@ export default function useAuth() {
     token.value = ''
     refreshToken.value = ''
     expiresInMins.value = 30
+    router.push('/')
   }
 
   const checkTokenExpiry = () => {

@@ -8,44 +8,59 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+let isRefreshing = false
+let subscribers: ((token: string) => void)[] = []
+
+const onRefreshed = (token: string) => {
+  subscribers.forEach((callback) => callback(token))
+  subscribers = []
+}
+
 apiClient.interceptors.request.use(
-  async (config) => {
-    const { token, checkTokenExpiry } = useAuth()
-
-    if (token.value) {
-      await checkTokenExpiry()
-      if (token.value) {
-        config.headers.Authorization = `Bearer ${token.value}`
-      }
+  (config) => {
+    const token = sessionStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
     }
-
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  },
+  (error) => Promise.reject(error),
 )
 
 apiClient.interceptors.response.use(
-  (response) => {
-    return response
-  },
+  (response) => response,
   async (error) => {
     const { refreshAccessToken, logout, token } = useAuth()
+    const originalRequest = error.config
 
     if (error.response && error.response.status === 401) {
-      try {
-        await refreshAccessToken()
+      if (!isRefreshing) {
+        isRefreshing = true
+        try {
+          await refreshAccessToken()
+          isRefreshing = false
 
-        if (token.value) {
-          error.config.headers['Authorization'] = `Bearer ${token.value}`
-          return axios(error.config)
-        } else {
+          if (token.value) {
+            onRefreshed(token.value)
+            originalRequest.headers['Authorization'] = `Bearer ${token.value}`
+            return apiClient(originalRequest)
+          } else {
+            logout()
+            return Promise.reject('No token available')
+          }
+        } catch (refreshError) {
           logout()
+          return Promise.reject(refreshError)
         }
-      } catch (refreshError) {
-        logout()
       }
+
+      return new Promise((resolve) => {
+        subscribers.push((newToken) => {
+          originalRequest.headers['Authorization'] = `Bearer ${newToken}`
+          resolve(apiClient(originalRequest))
+        })
+      })
     }
 
     return Promise.reject(error)
