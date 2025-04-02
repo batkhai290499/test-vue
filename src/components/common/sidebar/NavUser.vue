@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,9 @@ import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from '
 import { useUserStore } from '@/stores/useUserStore'
 import { onMounted } from 'vue'
 // import { storeToRefs } from 'pinia'
+import useLanguageSwitch from '@/composables/useLangagueSwitch'
 
+const { switchLanguage } = useLanguageSwitch()
 const userStore = useUserStore()
 
 onMounted(() => {
@@ -73,9 +75,9 @@ const { isMobile } = useSidebar()
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem @click="switchLanguage">
               <Sparkles />
-              Upgrade to Pro
+              Switch Language
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

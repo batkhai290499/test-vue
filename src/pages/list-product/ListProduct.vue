@@ -56,6 +56,7 @@ const invoices = [
 </script>
 
 <template>
+  <p>{{ $t('message.hello') }}</p>
   <Table>
     <TableCaption>A list of your recent invoices.</TableCaption>
     <TableHeader>
