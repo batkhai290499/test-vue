@@ -14,15 +14,15 @@ import {
 } from '@/components/ui/sidebar'
 
 import {
-  // AudioWaveform,
+  AudioWaveform,
   // BookOpen,
   // Bot,
-  // Command,
+  Command,
   Frame,
   GalleryVerticalEnd,
   // Map,
   // PieChart,
-  // Settings2,
+  Settings2,
   // SquareTerminal,
 } from 'lucide-vue-next'
 
@@ -44,7 +44,23 @@ const data = {
       plan: 'Enterprise',
     },
   ],
-  navMain: [],
+  navMain: [
+    {
+      title: 'Dashboard',
+      url: '#',
+      icon: Settings2,
+      items: [
+        {
+          title: 'List Products',
+          url: '#',
+        },
+        {
+          title: 'List Accounts',
+          url: '/accounts',
+        },
+      ],
+    },
+  ],
   projects: [
     {
       name: 'Design Engineering',

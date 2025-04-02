@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Signin from '@/views/SignIn.vue'
+import ListProduct from '@/views/ListProduct.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 
@@ -33,6 +34,18 @@ const router = createRouter({
           next()
         }
       },
+      children: [
+        {
+          path: '',
+          meta: { breadcrumb: 'List Product' },
+          component: ListProduct,
+        },
+        // {
+        //   path: 'register',
+        //   component: RegisterComponent,
+        //   meta: { breadcrumb: 'Register' },
+        // },
+      ],
     },
   ],
 })

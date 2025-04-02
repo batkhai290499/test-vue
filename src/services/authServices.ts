@@ -11,8 +11,6 @@ export const authService = {
         refreshToken: refreshAccessToken,
         expiresInMins,
       })
-      // console.log(response.data)
-
       if (response.data.accessToken) {
         const expiryTimestamp = Date.now() + expiresInMins * 60 * 1000
         sessionStorage.setItem('token', response.data.accessToken)
